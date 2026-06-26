@@ -1,0 +1,273 @@
+Cruciverba segreto
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cruciverba: Cinque Giorni a Imola</title>
+    <style>
+        :root {
+            --bg: #f8f9fa;
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #e74c3c;
+            --acrostic-bg: #FDEDEC;
+            --cell-bg: #ffffff;
+            --correct-bg: #d4edda;
+            --correct-text: #155724;
+            --wrong-bg: #f8d7da;
+            --wrong-text: #721c24;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--primary);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 { font-size: 1.5rem; text-align: center; margin-bottom: 5px; }
+        p.subtitle { font-size: 0.9rem; color: #7f8c8d; text-align: center; margin-bottom: 20px; }
+
+        .crossword-container {
+            background-color: var(--secondary);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            overflow-x: auto;
+            max-width: 100%;
+        }
+
+        .row { display: flex; margin-bottom: 2px; }
+        
+        .row-number {
+            width: 25px;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+
+        .cell {
+            width: 35px;
+            height: 35px;
+            margin: 1px;
+            border: none;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            background-color: var(--cell-bg);
+            outline: none;
+            transition: all 0.2s;
+            caret-color: transparent;
+        }
+
+        .cell:focus {
+            background-color: #e8f4f8;
+            box-shadow: inset 0 0 0 2px #3498db;
+        }
+
+        .cell.acrostic {
+            background-color: var(--acrostic-bg);
+            color: #c0392b;
+            box-shadow: inset 0 0 0 2px var(--accent);
+        }
+
+        .cell.black {
+            background-color: var(--primary);
+            visibility: hidden;
+        }
+
+        .cell.correct {
+            background-color: var(--correct-bg);
+            color: var(--correct-text);
+            box-shadow: inset 0 0 0 2px #28a745;
+        }
+
+        .cell.wrong {
+            background-color: var(--wrong-bg);
+            color: var(--wrong-text);
+            box-shadow: inset 0 0 0 2px #dc3545;
+        }
+
+        button {
+            margin-top: 25px;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        button:hover { background-color: #1a252f; }
+
+        .definitions-container {
+            margin-top: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .definitions-container h2 { font-size: 1.2rem; border-bottom: 2px solid var(--bg); padding-bottom: 10px; }
+        
+        ol { padding-left: 20px; font-size: 0.95rem; line-height: 1.6; }
+        li { margin-bottom: 8px; }
+
+        @media (max-width: 500px) {
+            .cell { width: 30px; height: 30px; font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Cruciverba d'Autore</h1>
+    <p class="subtitle">Risolvi le definizioni. Le lettere nella colonna rossa riveleranno la frase misteriosa!</p>
+
+    <div class="crossword-container" id="grid"></div>
+
+    <button onclick="checkAnswers()">Verifica Soluzioni</button>
+
+    <div class="definitions-container">
+        <h2>Definizioni Orizzontali</h2>
+        <ol>
+            <li>Il rifugio controllato e protetto per i cani randagi.</li>
+            <li>La squadra di calcio nerazzurra di Milano.</li>
+            <li>Prefisso di origine greca che indica una stretta relazione con il Giappone.</li>
+            <li>L'ordine di classificazione ordinale successivo al terzo.</li>
+            <li>Essere umano maschile; dà il nome alla nota casa di alta moda Ermenegildo...</li>
+            <li>Dispositivo con pale rotanti per la propulsione di aerei e navi.</li>
+            <li>Il piccolo felino domestico più diffuso al mondo.</li>
+            <li>La classica abitazione semisferica in ghiaccio degli Eschimesi.</li>
+            <li>Il metallo nobile e prezioso del primo classificato.</li>
+            <li>La città eterna, capitale della Repubblica Italiana.</li>
+            <li>Precipitazione atmosferica invernale in cristalli di ghiaccio.</li>
+            <li>La nostra penisola geografica nel cuore del Mediterraneo.</li>
+            <li>Verbo di movimento (contrario di venire).</li>
+            <li>Prodotto lattiero-caseario montato per decorare le fragole.</li>
+            <li>Termine inglese per definire una chitarra di tipo classico.</li>
+            <li>Apparecchio di sintonizzazione delle frequenze sonore in auto.</li>
+            <li>La stagione astronomica e meteorologica più fredda.</li>
+            <li>Il cereale pilastro della dieta mediterranea.</li>
+            <li>Storica città della Romagna celebre per l'Autodromo.</li>
+        </ol>
+    </div>
+
+    <script>
+        const words = [
+            "CANILE", "INTER", "NIPPO", "QUARTO", "UOMO", "ELICA", 
+            "GATTO", "IGLU", "ORO", "ROMA", "NEVE", "ITALIA", 
+            "ANDARE", "PANNA", "ACOUSTIC", "RADIO", "INVERNO", 
+            "GRANO", "IMOLA"
+        ];
+        
+        const gridElement = document.getElementById('grid');
+        const maxCols = Math.max(...words.map(w => w.length));
+
+        words.forEach((word, rowIndex) => {
+            const rowDiv = document.createElement('div');
+            rowDiv.className = 'row';
+
+            const numDiv = document.createElement('div');
+            numDiv.className = 'row-number';
+            numDiv.innerText = (rowIndex + 1) + ".";
+            rowDiv.appendChild(numDiv);
+
+            for (let colIndex = 0; colIndex < maxCols; colIndex++) {
+                const cell = document.createElement('input');
+                cell.type = 'text';
+                cell.maxLength = 1;
+                cell.dataset.row = rowIndex;
+                cell.dataset.col = colIndex;
+
+                if (colIndex < word.length) {
+                    cell.className = 'cell ' + (colIndex === 0 ? 'acrostic' : '');
+                    cell.dataset.answer = word[colIndex];
+                    
+                    cell.addEventListener('input', function(e) {
+                        this.value = this.value.replace(/[^A-Za-z]/g, '').toUpperCase();
+                        this.classList.remove('correct', 'wrong');
+                        
+                        if (this.value !== '') {
+                            let nextCell = document.querySelector(`input[data-row="${rowIndex}"][data-col="${colIndex + 1}"]`);
+                            if (!nextCell || nextCell.classList.contains('black')) {
+                                nextCell = document.querySelector(`input[data-row="${rowIndex + 1}"][data-col="0"]`);
+                            }
+                            if (nextCell) nextCell.focus();
+                        }
+                    });
+
+                    cell.addEventListener('keydown', function(e) {
+                        if (e.key === 'Backspace' && this.value === '') {
+                            e.preventDefault();
+                            let prevCell = document.querySelector(`input[data-row="${rowIndex}"][data-col="${colIndex - 1}"]`);
+                            if (!prevCell || prevCell.classList.contains('row-number')) {
+                                if (rowIndex > 0) {
+                                    const prevRowLength = words[rowIndex - 1].length;
+                                    prevCell = document.querySelector(`input[data-row="${rowIndex - 1}"][data-col="${prevRowLength - 1}"]`);
+                                }
+                            }
+                            if (prevCell) {
+                                prevCell.focus();
+                                prevCell.value = '';
+                                prevCell.classList.remove('correct', 'wrong');
+                            }
+                        }
+                    });
+
+                } else {
+                    cell.className = 'cell black';
+                    cell.disabled = true;
+                }
+                rowDiv.appendChild(cell);
+            }
+            gridElement.appendChild(rowDiv);
+        });
+
+        function checkAnswers() {
+            let allCorrect = true;
+            let isComplete = true;
+
+            document.querySelectorAll('.cell:not(.black)').forEach(cell => {
+                if (cell.value === '') {
+                    isComplete = false;
+                    allCorrect = false;
+                } else if (cell.value === cell.dataset.answer) {
+                    cell.classList.add('correct');
+                    cell.classList.remove('wrong');
+                } else {
+                    cell.classList.add('wrong');
+                    cell.classList.remove('correct');
+                    allCorrect = false;
+                }
+            });
+
+            if (allCorrect) {
+                setTimeout(() => {
+                    alert("🎉 BRAVISSIMA AMORE! 🎉\n\nHai completato il cruciverba!\nLa frase nascosta è:\nCINQUE GIORNI A PARIGI");
+                }, 300);
+            } else if (!isComplete) {
+                alert("Completa tutte le caselle prima di verificare le soluzioni (le lettere rosse indicano errori).");
+            } else {
+                alert("Ci sono degli errori. Controlla le caselle rosse e riprova!");
+            }
+        }
+    </script>
+</body>
+</html>
